@@ -600,7 +600,10 @@ func (vs *validatorStatistics) verifySignaturesBelowSignedThreshold(
 
 	previousTempRating := validator.TempRating
 	var message string
-	if computedThreshold <= signedThreshold {
+
+	if validator.List != string(core.EligibleList) {
+		message = validator.List
+	} else if computedThreshold <= signedThreshold {
 		increasedRatingTimes := uint32(0)
 		if epoch < vs.belowSignedThresholdEnableEpoch {
 			increasedRatingTimes = validator.ValidatorFailure
