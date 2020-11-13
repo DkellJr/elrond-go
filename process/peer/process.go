@@ -643,6 +643,9 @@ func (vs *validatorStatistics) verifySignaturesBelowSignedThreshold(
 		"validatorIgnored", validator.ValidatorIgnoredSignatures,
 		"new tempRating", validator.TempRating,
 		"old tempRating", previousTempRating,
+		"rating", validator.Rating,
+		"num selected in success blocks", validator.NumSelectedInSuccessBlocks,
+		"rating modifier", validator.RatingModifier,
 	)
 
 	return nil
