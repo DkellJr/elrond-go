@@ -628,6 +628,10 @@ func (vs *validatorStatistics) verifySignaturesBelowSignedThreshold(
 		message = "validator signed - ok"
 	}
 
+	if validator.List != string(core.EligibleList) {
+		message = validator.List
+	}
+
 	log.Debug(message,
 		"pk", validator.PublicKey,
 		"signed %", computedThreshold,
