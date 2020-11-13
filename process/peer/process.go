@@ -567,11 +567,12 @@ func (vs *validatorStatistics) ProcessRatingsEndOfEpoch(
 		epoch = epoch - 1
 	}
 
+	log.Debug("ProcessRatingsEndOfEpoch")
 	signedThreshold := vs.rater.GetSignedBlocksThreshold()
 	for shardId, validators := range validatorInfos {
 		for _, validator := range validators {
 			if validator.List != string(core.EligibleList) {
-				continue
+				//continue
 			}
 
 			err := vs.verifySignaturesBelowSignedThreshold(validator, signedThreshold, shardId, epoch)
@@ -597,6 +598,8 @@ func (vs *validatorStatistics) verifySignaturesBelowSignedThreshold(
 	validatorOccurrences := core.MaxUint32(1, validator.ValidatorSuccess+validator.ValidatorFailure+validator.ValidatorIgnoredSignatures)
 	computedThreshold := float32(validator.ValidatorSuccess) / float32(validatorOccurrences)
 
+	previousTempRating := validator.TempRating
+	var message string
 	if computedThreshold <= signedThreshold {
 		increasedRatingTimes := uint32(0)
 		if epoch < vs.belowSignedThresholdEnableEpoch {
@@ -618,18 +621,22 @@ func (vs *validatorStatistics) verifySignaturesBelowSignedThreshold(
 			return err
 		}
 
-		log.Debug("below signed blocks threshold",
-			"pk", validator.PublicKey,
-			"signed %", computedThreshold,
-			"validatorSuccess", validator.ValidatorSuccess,
-			"validatorFailure", validator.ValidatorFailure,
-			"validatorIgnored", validator.ValidatorIgnoredSignatures,
-			"new tempRating", newTempRating,
-			"old tempRating", validator.TempRating,
-		)
+		message = "validator signed - below signed blocks threshold"
 
 		validator.TempRating = newTempRating
+	} else {
+		message = "validator signed - ok"
 	}
+
+	log.Debug(message,
+		"pk", validator.PublicKey,
+		"signed %", computedThreshold,
+		"validatorSuccess", validator.ValidatorSuccess,
+		"validatorFailure", validator.ValidatorFailure,
+		"validatorIgnored", validator.ValidatorIgnoredSignatures,
+		"new tempRating", validator.TempRating,
+		"old tempRating", previousTempRating,
+	)
 
 	return nil
 }

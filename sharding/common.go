@@ -50,6 +50,7 @@ func displayNodesConfiguration(
 	actualRemaining map[uint32][]Validator,
 	nbShards uint32,
 ) {
+	log.Debug("displayNodesConfiguration")
 	for shard := uint32(0); shard <= nbShards; shard++ {
 		shardID := shard
 		if shardID == nbShards {
@@ -57,19 +58,23 @@ func displayNodesConfiguration(
 		}
 		for _, v := range eligible[shardID] {
 			pk := v.PubKey()
-			log.Debug("eligible", "pk", pk, "shardID", shardID)
+			chances := v.Chances()
+			log.Debug("eligible", "pk", pk, "shardID", shardID, "chances", chances)
 		}
 		for _, v := range waiting[shardID] {
 			pk := v.PubKey()
-			log.Debug("waiting", "pk", pk, "shardID", shardID)
+			chances := v.Chances()
+			log.Debug("waiting", "pk", pk, "shardID", shardID, "chances", chances)
 		}
 		for _, v := range leaving[shardID] {
 			pk := v.PubKey()
-			log.Debug("leaving", "pk", pk, "shardID", shardID)
+			chances := v.Chances()
+			log.Debug("leaving", "pk", pk, "shardID", shardID, "chances", chances)
 		}
 		for _, v := range actualRemaining[shardID] {
 			pk := v.PubKey()
-			log.Debug("actually remaining", "pk", pk, "shardID", shardID)
+			chances := v.Chances()
+			log.Debug("actually remaining", "pk", pk, "shardID", shardID, "chances", chances)
 		}
 	}
 }
